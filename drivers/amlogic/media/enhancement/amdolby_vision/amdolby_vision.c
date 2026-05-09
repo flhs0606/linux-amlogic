@@ -6969,6 +6969,9 @@ int register_dv_functions(const struct dolby_vision_func_s *func)
 		}
 		pr_info("efuse_mode=%d reg_value = 0x%x\n", efuse_mode, reg_value);
 
+		if (is_meson_g12b_cpu())
+			g12b_dv_licensed = (efuse_mode == 0);
+
 		support_info = !efuse_mode;             /*bit0=1 => no efuse*/
 		support_info = support_info | (1 << 1); /*bit1=1 => ko loaded*/
 		support_info = support_info | (1 << 2); /*bit2=1 => updated*/

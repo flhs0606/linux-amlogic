@@ -25,6 +25,8 @@
 #include <linux/io.h>
 static int meson_cpu_version[MESON_CPU_VERSION_LVL_MAX+1];
 void __iomem  *assist_hw_rev;
+bool g12b_dv_licensed;
+EXPORT_SYMBOL(g12b_dv_licensed);
 
 int get_meson_cpu_version(int level)
 {

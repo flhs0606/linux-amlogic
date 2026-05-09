@@ -33,6 +33,7 @@
 #include <linux/sched.h>
 #include <linux/smp.h>
 #include <linux/delay.h>
+#include <linux/string.h>
 #ifdef CONFIG_AMLOGIC_CPU_INFO
 #include <linux/amlogic/cpu_version.h>
 #endif
@@ -229,6 +230,8 @@ static int c_show(struct seq_file *m, void *v)
 				(meson_pack & meson_packages[i].pack_mask))
 			meson_name = meson_packages[i].name;
 	}
+	if (!strcmp(meson_name, "A311D") && is_g12b_dv_licensed())
+		meson_name = "A311D-K";
 	seq_printf(m, "model name\t: Amlogic %s rev %01x\n", meson_name, meson_minor);
 #endif
 	seq_printf(m, "Hardware\t: %s\n\n", machine_name);
