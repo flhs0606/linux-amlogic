@@ -7760,8 +7760,10 @@ s32 update_vframe_src_fmt(
 	}
 
 	if (vf->src_fmt.fmt == VFRAME_SIGNAL_FMT_INVALID) {
-		if ((signal_transfer_characteristic == 18) &&
+		if ((signal_transfer_characteristic == 18 ||
+		     signal_transfer_characteristic == 14) &&
 		    (signal_color_primaries == 9)) {
+			/* transfer==14: BT.2020-10 mislabeled as HLG by old muxers */
 			vf->src_fmt.fmt = VFRAME_SIGNAL_FMT_HLG;
 		} else if ((signal_transfer_characteristic == 0x30) &&
 			     ((signal_color_primaries == 9) ||
