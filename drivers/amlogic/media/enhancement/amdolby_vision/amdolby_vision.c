@@ -3584,7 +3584,8 @@ EXPORT_SYMBOL(is_dovi_dual_layer_frame);
 
 static bool vf_is_hlg(struct vframe_s *vf)
 {
-	return ((signal_transfer_characteristic == 18) &&
+	return ((signal_transfer_characteristic == 18 ||
+		 signal_transfer_characteristic == 14) &&
 	        (signal_color_primaries == 9));
 }
 

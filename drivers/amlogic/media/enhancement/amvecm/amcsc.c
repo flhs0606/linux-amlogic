@@ -4350,8 +4350,10 @@ enum vpp_matrix_csc_e get_csc_type(void)
 					pr_csc(1, "\tWARNING: non-standard HDR!!!\n");
 				csc_type = VPP_MATRIX_BT2020YUV_BT2020RGB;
 			}
-		} else if (signal_transfer_characteristic == 18) {
-			/* HLG */
+		} else if (signal_transfer_characteristic == 18 ||
+			   (signal_transfer_characteristic == 14 &&
+			    signal_color_primaries == 9)) {
+			/* HLG (transfer==14: BT.2020-10 mislabel) */
 			if (signal_cuva)
 				csc_type = VPP_MATRIX_BT2020YUV_BT2020RGB_CUVA;
 			else
@@ -6876,8 +6878,11 @@ static enum hdr_type_e get_source_type(enum vd_path_e vd_path)
 	    get_dolby_vision_src_format()
 	    == HDRTYPE_DOVI)
 		return HDRTYPE_DOVI;
-	if ((signal_transfer_characteristic == 18) &&
+	if ((signal_transfer_characteristic == 18 ||
+	     (signal_transfer_characteristic == 14 &&
+	      signal_color_primaries == 9)) &&
 	    (signal_color_primaries == 9)) {
+		/* transfer==14: BT.2020-10 mislabeled as HLG */
 		if (signal_cuva)
 			return HDRTYPE_CUVA_HLG;
 		else
