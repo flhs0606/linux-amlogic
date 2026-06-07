@@ -370,16 +370,24 @@ static int r1p1_tsensor_initialize(struct platform_device *pdev)
 	/*r1p1 tsensor ver to doing*/
 	if (((ver & 0xf) >> 2) == 0 || (ver & 0x80) == 0) {
 		pr_info("tsensor trim info invalid, try fallback\n");
-		if (is_meson_g12a_cpu() || is_meson_g12b_cpu()) {
-			if (data->efuse_base == P_TSENSOR_EFUSE_BASE) {
-				trim_info = is_meson_g12a_cpu() ?
-					G12A_P_TSENSOR_TRIM_INFO :
-					G12B_P_TSENSOR_TRIM_INFO;
-			} else if (data->efuse_base == D_TSENSOR_EFUSE_BASE) {
-				trim_info = is_meson_g12a_cpu() ?
-					G12A_D_TSENSOR_TRIM_INFO :
-					G12B_D_TSENSOR_TRIM_INFO;
-			} else {
+
+		// Cache the SoC family to avoid repeated get_cpu_type() IO reads.
+		bool is_g12a = is_meson_g12a_cpu();
+		bool is_g12b = is_meson_g12b_cpu();
+
+		if (is_g12a || is_g12b) {
+			// Look up fallback trim_info by efuse physical address.
+			// G12A and G12B each have two efuse regions (P=primary,
+			// D=secondary) at known physical bases.
+			u32 base = data->efuse_base;
+
+			if (base == P_TSENSOR_EFUSE_BASE)
+				trim_info = is_g12a ? G12A_P_TSENSOR_TRIM_INFO :
+							G12B_P_TSENSOR_TRIM_INFO;
+			else if (base == D_TSENSOR_EFUSE_BASE)
+				trim_info = is_g12a ? G12A_D_TSENSOR_TRIM_INFO :
+							G12B_D_TSENSOR_TRIM_INFO;
+			else {
 				pr_info("unknown efuse base, no fallback\n");
 				ret = ERANGE;
 				goto out;
