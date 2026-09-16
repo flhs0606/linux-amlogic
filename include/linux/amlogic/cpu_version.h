@@ -56,6 +56,12 @@ extern const char *machine_name;
 #define CHIPID_LEN 16
 void cpuinfo_get_chipid(unsigned char *cid, unsigned int size);
 int  meson_cpu_version_init(void);
+
+extern bool g12b_dv_licensed;
+static inline bool is_g12b_dv_licensed(void)
+{
+	return g12b_dv_licensed;
+}
 #ifdef CONFIG_AMLOGIC_CPU_VERSION
 int get_meson_cpu_version(int level);
 int arch_big_cpu(int cpu);
